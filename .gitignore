@@ -1,3 +1,4 @@
-quarkus-reactive/target/
+target/
 .idea/
+
 *.iml
