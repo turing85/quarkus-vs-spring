@@ -1,0 +1,11 @@
+FROM quay.io/quarkus/quarkus-micro-image:2.0
+ARG APP_DIR=/application
+ARG UID=1001
+
+WORKDIR ${APP_DIR}
+COPY \
+  --chmod=111 \
+   target/*-runner ${APP_DIR}/application
+
+USER ${UID}:${UID}
+ENTRYPOINT [ "./application" ]

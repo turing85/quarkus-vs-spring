@@ -1,0 +1,15 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: none
+  r2dbc:
+    username: ${DB_USER:animals}
+    password: ${DB_PASSWORD:animals}
+    url: r2dbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_DATABASE:animals}
+    pool:
+      enabled: true
+      initial-size: 8
+      max-size: 8
+db:
+  cleanup:
+    cron: 0 * * * * ?

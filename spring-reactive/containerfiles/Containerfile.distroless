@@ -1,0 +1,16 @@
+FROM gcr.io/distroless/java17:nonroot
+ARG APP_DIR=/application
+ARG UID=1001
+
+USER root
+WORKDIR ${APP_DIR}
+ENV LANGUAGE='en_US:en'
+
+COPY --chmod=755 target/*.iar/ ${APP_DIR}/app.jar
+
+USER ${UID}:${UID}
+ENTRYPOINT [ \
+  "java", \
+  "-jar", \
+  "app.jar" \
+]

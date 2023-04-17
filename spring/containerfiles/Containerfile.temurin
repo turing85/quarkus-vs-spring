@@ -1,0 +1,23 @@
+FROM docker.io/eclipse-temurin:17.0.6_10-jre-alpine
+ARG APP_DIR=/application
+ARG UID=1001
+
+USER root
+WORKDIR ${APP_DIR}
+RUN adduser \
+  -u 1001 \
+  -h ${APP_DIR} \
+  -H \
+  -s /bin/bash \
+  -D \
+  runner
+ENV LANGUAGE='en_US:en'
+
+COPY --chmod=755 target/*.jar ${APP_DIR}/app.jar
+
+USER ${UID}:${UID}
+ENTRYPOINT [ \
+  "java", \
+  "-jar", \
+  "app.jar" \
+]

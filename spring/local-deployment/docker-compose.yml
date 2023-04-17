@@ -1,0 +1,161 @@
+version: "3.7"
+services:
+  animal-service-temurin:
+    container_name: animal-service
+    profiles:
+      - temurin
+    depends_on:
+      - postgres
+    image: animal-service:spring-temurin
+    build:
+      context: ../
+      dockerfile: containerfiles/Containerfile.temurin
+      tags:
+        - animal-service:latest
+    deploy:
+      resources:
+        limits:
+          cpus: "1"
+          memory: 128M
+        reservations:
+          cpus: "1"
+          memory: 128M
+    env_file:
+      - animal-service/common.env
+      - animal-service/jvm.env
+    ports:
+      - "5005:5005"
+      - "8080:8080"
+      - "9999:9999"
+    networks:
+      - default
+  animal-service-ubi:
+    container_name: animal-service
+    profiles:
+      - ubi
+    depends_on:
+      - postgres
+    image: animal-service:spring-ubi
+    build:
+      context: ../
+      dockerfile: containerfiles/Containerfile.ubi
+      tags:
+        - animal-service:latest
+    deploy:
+      resources:
+        limits:
+          cpus: "1"
+          memory: 128M
+        reservations:
+          cpus: "1"
+          memory: 128M
+    env_file:
+      - animal-service/common.env
+      - animal-service/jvm.env
+    ports:
+      - "5005:5005"
+      - "8080:8080"
+      - "9999:9999"
+    networks:
+      - default
+  animal-service-distroless:
+    container_name: animal-service
+    profiles:
+      - distroless
+    depends_on:
+      - postgres
+    image: animal-service:spring-distroless
+    build:
+      context: ../
+      dockerfile: containerfiles/Containerfile.distroless
+      tags:
+        - animal-service:latest
+    deploy:
+      resources:
+        limits:
+          cpus: "1"
+          memory: 128M
+        reservations:
+          cpus: "1"
+          memory: 128M
+    env_file:
+      - animal-service/common.env
+      - animal-service/jvm.env
+    ports:
+      - "5005:5005"
+      - "8080:8080"
+      - "9999:9999"
+    networks:
+      - default
+  animal-service-native:
+    container_name: animal-service
+    profiles:
+      - native
+    depends_on:
+      - postgres
+    image: animal-service:spring-native
+    build:
+      context: ../
+      dockerfile: containerfiles/Containerfile.native
+      tags:
+        - animal-service:latest
+    deploy:
+      resources:
+        limits:
+          cpus: "1"
+          memory: 35M
+        reservations:
+          cpus: "1"
+          memory: 35M
+    env_file:
+      - animal-service/common.env
+    ports:
+      - "8080:8080"
+    networks:
+      - default
+
+  # postgres + pgadmin4 web UI
+  postgres:
+    container_name: postgres
+    image: postgres:15.2-alpine3.17
+    deploy:
+      resources:
+        limits:
+          cpus: "4.0"
+    volumes:
+      - ${REMOTE_PROJECT_PATH:-.}/postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d/:ro
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+      POSTGRES_MULTIPLE_DATABASES: animals
+    ports:
+      - "5432:5432"
+    networks:
+      - default
+      - database
+    tmpfs:
+      - /var/lib/postgresql/data
+  # pgadmin4 web UI - to interact with the postgres databases
+  pgadmin4:
+    container_name: pgadmin4
+    profiles:
+      - develop
+    image: dpage/pgadmin4:6.21
+    volumes:
+      - ${REMOTE_PROJECT_PATH:-.}/pgadmin4/pgadmin4/servers.json:/pgadmin4/servers.json:ro
+    depends_on:
+      - postgres
+    ports:
+      - "60080:80"
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=pgadmin4@pgadmin.org
+      - PGADMIN_DEFAULT_PASSWORD=pgadmin4
+    networks:
+      - database
+
+networks:
+  default:
+    driver: bridge
+  database:
+    driver: bridge

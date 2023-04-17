@@ -1,0 +1,13 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: none
+  datasource:
+    driverClassName: org.postgresql.Driver
+    username: ${DB_USER:animals}
+    password: ${DB_PASSWORD:animals}
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_DATABASE:animals}
+    max-size: 8
+db:
+  cleanup:
+    cron: 0 * * * * ?

@@ -1,0 +1,20 @@
+FROM registry.access.redhat.com/ubi8/openjdk-17:1.15
+ARG APP_DIR=/application
+ARG UID=1001
+
+USER root
+WORKDIR ${APP_DIR}
+RUN adduser \
+  --uid ${UID} \
+  --home-dir ${APP_DIR} \
+  --shell /bin/bash \
+  runner
+ENV LANGUAGE='en_US:en'
+
+COPY --chmod=755 target/*.jar ${APP_DIR}/app.jar
+
+USER ${UID}:${UID}
+ENTRYPOINT [ \
+  "java", \
+  "-jar", \
+  "app.jar" ]
