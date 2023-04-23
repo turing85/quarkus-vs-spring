@@ -7,7 +7,7 @@ cd ..
 ./mvnw clean package
 
 # Build image
-docker-compose -f local-deployment/docker-compose.yml build animal-service-temurin
+docker build -f ./containerfiles/Containerfile.temurin --tag animal-service:quarkus-temurin .
 
 docker network create perf
 
@@ -33,7 +33,6 @@ docker run \
   --detach \
   --name animals \
   --env QUARKUS_HTTP_HOST=0.0.0.0 \
-  --env QUARKUS_DATASOURCE_JDBC_MAX_SIZE=100 \
   --env DB_HOST=postgres \
   --env DB_PORT=5432 \
   --env DB_DATABASE=animals \

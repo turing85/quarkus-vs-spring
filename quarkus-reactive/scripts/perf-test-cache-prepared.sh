@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-event_loop_size="${1:-0}"
+reactive_max_size="${1:-0}"
 
 cd "$( dirname "${BASH_SOURCE[0]}" )" 1> /dev/null
 cd ..
@@ -9,7 +9,7 @@ cd ..
 ./mvnw clean package
 
 # Build image
-docker-compose -f local-deployment/docker-compose.yml build animal-service-temurin
+docker build -f ./containerfiles/Containerfile.temurin --tag animal-service:quarkus-reactive-temurin .
 
 docker network create perf
 
@@ -35,8 +35,7 @@ docker run \
   --detach \
   --name animals \
   --env QUARKUS_HTTP_HOST=0.0.0.0 \
-  --env QUARKUS_DATASOURCE_REACTIVE_EVENT_LOOP_SIZE="${event_loop_size}" \
-  --env QUARKUS_DATASOURCE_REACTIVE_MAX_SIZE=100 \
+  --env QUARKUS_DATASOURCE_REACTIVE_MAX_SIZE="${reactive_max_size}" \
   --env QUARKUS_DATASOURCE_REACTIVE_CACHE_PREPARED_STATEMENTS=true \
   --env DB_HOST=postgres \
   --env DB_PORT=5432 \
