@@ -6,12 +6,12 @@ reactive_max_size="${1:-0}"
 cd "$( dirname "${BASH_SOURCE[0]}" )" 1> /dev/null
 cd ..
 
-./mvnw clean package
+./mvnw clean package 1> /dev/null
 
 # Build image
-docker build -f ./containerfiles/Containerfile.temurin --tag animal-service:quarkus-reactive-temurin .
+docker build -f ./containerfiles/Containerfile.temurin --tag animal-service:quarkus-reactive-temurin . 1> /dev/null
 
-docker network create perf
+docker network create perf 1> /dev/null
 
 # Deploy environment
 docker run \
@@ -28,7 +28,8 @@ docker run \
   --publish '5432:5432' \
   --network perf \
   postgres:15.2-alpine3.17 \
-  postgres -c 'max_connections=500'
+  postgres -c 'max_connections=500' \
+  1> /dev/null
 
 docker run \
   --rm \
@@ -48,30 +49,31 @@ docker run \
   --cpuset-cpus=1,2 \
   --publish '8080:8080' \
   --network perf \
-  localhost/animal-service:quarkus-reactive-temurin
+  localhost/animal-service:quarkus-reactive-temurin \
+  1> /dev/null
 
 # Prepare database
-./mvnw flyway:migrate
+./mvnw flyway:migrate 1> /dev/null
 
 # Perf test
 cd ../wrk/lua-scripts
-taskset -c 3 \
+taskset --cpu-list 3 \
   wrk \
     --threads 1 \
     --connections 100 \
     --duration 1m \
     --script create_animals.lua \
     http://localhost:8080
-
-taskset -c 3 \
+echo "----------------------------------------"
+taskset --cpu-list 3 \
   wrk \
     --threads 1 \
     --connections 100 \
     --duration 1m \
     --script create_animals.lua \
     http://localhost:8080
-
-taskset -c 3 \
+echo "----------------------------------------"
+taskset --cpu-list 3 \
   wrk \
     --threads 1 \
     --connections 100 \
