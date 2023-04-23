@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -e
 
+jdbc_max_size="${1:-20}"
+
 cd "$( dirname "${BASH_SOURCE[0]}" )" 1> /dev/null
 cd ..
 
@@ -34,6 +36,7 @@ docker run \
   --detach \
   --name animals \
   --env QUARKUS_HTTP_HOST=0.0.0.0 \
+  --env QUARKUS_DATASOURCE_JDBC_MAX_SIZE="${jdbc_max_size}" \
   --env DB_HOST=postgres \
   --env DB_PORT=5432 \
   --env DB_DATABASE=animals \
