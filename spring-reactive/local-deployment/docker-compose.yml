@@ -6,7 +6,7 @@ services:
       - temurin
     depends_on:
       - postgres
-    image: animal-service:spring-temurin
+    image: animal-service:spring-reactive-temurin
     build:
       context: ../
       dockerfile: containerfiles/Containerfile.temurin
@@ -35,7 +35,7 @@ services:
       - ubi
     depends_on:
       - postgres
-    image: animal-service:spring-ubi
+    image: animal-service:spring-reactive-ubi
     build:
       context: ../
       dockerfile: containerfiles/Containerfile.ubi
@@ -64,7 +64,7 @@ services:
       - distroless
     depends_on:
       - postgres
-    image: animal-service:spring-distroless
+    image: animal-service:spring-reactive-distroless
     build:
       context: ../
       dockerfile: containerfiles/Containerfile.distroless
@@ -93,7 +93,7 @@ services:
       - native
     depends_on:
       - postgres
-    image: animal-service:spring-native
+    image: animal-service:spring-reactive-native
     build:
       context: ../
       dockerfile: containerfiles/Containerfile.native
