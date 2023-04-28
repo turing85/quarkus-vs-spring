@@ -121,7 +121,7 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "4.0"
+          cpus: "2"
     volumes:
       - ${REMOTE_PROJECT_PATH:-.}/postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d/:ro
     environment:
@@ -134,8 +134,12 @@ services:
     networks:
       - default
       - database
-    tmpfs:
-      - /var/lib/postgresql/data
+#    tmpfs:
+#      - /var/lib/postgresql/data
+    command:
+      - postgres
+      - -c
+      - 'max_connections=500'
   # pgadmin4 web UI - to interact with the postgres databases
   pgadmin4:
     container_name: pgadmin4
