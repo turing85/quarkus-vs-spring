@@ -134,8 +134,8 @@ services:
     networks:
       - default
       - database
-    tmpfs:
-      - /var/lib/postgresql/data
+#    tmpfs:
+#      - /var/lib/postgresql/data
     command:
       - postgres
       - -c
