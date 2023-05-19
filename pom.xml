@@ -53,6 +53,13 @@
                             <configFile>src/main/resources/db/config/local.conf</configFile>
                         </configFiles>
                     </configuration>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.postgresql</groupId>
+                            <artifactId>postgresql</artifactId>
+                            <version>42.6.0</version>
+                        </dependency>
+                    </dependencies>
                 </plugin>
             </plugins>
         </pluginManagement>
